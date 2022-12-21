@@ -1,0 +1,32 @@
+Asp.net Core .Net 5 (Not Supported)
+				Model Creation / AdDbContext Creation / Enums 
+
+1. Φτιάξε τα Models (Movie, Cinema, Producer, Actor):
+	α. Το DateTime είναι για τα StartDate/EndDate.
+	β. Το MovieCategory το βάζουμε κάνοντας import το αρχείο Data που φτιάξαμε που εκεί περιέχει enum δεδομένα (σαν list).
+2. Πρόσθεσε DbContext file (AppDbContext) στο αρχείο Data που έχουμε φτιάξει για το enum MovieCategory.
+3. Για παραπάνω ευκολία, στο αρχείο Data φτιάχνουμε ένα άλλο αρχείο ονομάζοντας το Enums και εκεί βάζουμε το αρχείο MovieCategory.
+4. Στο αρχείο AppDbContext, βάζουμε δίπλα του: " : DbContext " (και κάνουμε install το package Microsoft.EntityFrameworkCore) --> Σε περίπτωση που έχουμε "Package restore failed. Rolling back package changes" πρόβλημα
+			μπορούμε να το διορθώσουμε κάνοντας "Clear All Nuget Cache(s)" και αλλάζουμε στο αρχείο μας στο TargetFramework βάζουμε το net6.0.
+5. Φτιάχνουμε ένα constructor στο αρχείο AppDbContext και βάζουμε ως parameter " DbContextOptions<AppDbContext> options " και βάζουμε το base class " options ".
+6. Πάμε στο αρχείο Startup.cs στο κομμάτι του ConfigureServices και προσθέτουμε το configuration για το DbContext, 
+			και βάζω: " services.AddDbContext<AppDbContext>(); ". Στην παρένθεση δεν βάζω ακόμη κάτι σαν parameter διότι εκεί θα μπου τα data storage(πρέπει να κάνουμε import το namespace που μας προτείνει).
+
+
+						Model Relationships
+
+1. Για να γίνουν πιο σωστές οι σχέσεις μεταξύ των Models, καλό θα ήταν να φτιάξουμε ένα σχέδιο στο οποίο αναφρέρουμε τις σχέσεις μεταξύ των Models (όλες οι σχέσεις σε αυτήν την εξήσηση, είναι με βάση την εικόνα).
+	Κανόνας:	
+			a. Όταν ένα model έχει πολλαπλές σχέσεις με ένα άλλο model, τότε στο model ειναι 1 προς πολλά, φτιάχνουμε μια List στοχευμένη προς το άλλο model.
+				Π.Χ. Στο Cinema model, φτιάχνουμε μια list προοριζόμενη στο Movies, στο Producers model, φτιάχνουμε μια list προοριζόμενη στο Movies,
+				     στο Actors model, φτιάχνουμε μια list προοριζόμενη στο Actors_Movies.
+			b. Όταν δύο models έχουν πολλαπλές σχέσεις μεταξύ τους, τότε πρέπει να φτιάξουμε άλλο ένα model στο οποίο τα ενώνουμε αυτά μεταξύ τους
+				Π.Χ. Τα models Movies, Actors έχουν αρχικά πολλές σχέσεις μεταξύ τους διότι πολλαπλοί ηθοποιοί μπορούν να παίξουν σε μια ταινία, όπως και
+				     σε μια ταινία υπάρχουν πολλαπλοί ηθοποιοί. Γι'αυτό φτιάχνουμε ένα Actors_Movies model στο οποίο συλλέγουμε εκεί τα MovieId και τα ActorId.
+2. Για την δημιουργία των σχέσεων, πρέπει να γράψουμε: " public List<* Το model στο οποίο προοριζόμαστε *> * ένα όνομα που θέλουμε * { get; set; } ".				
+3. Στο model στο οποίο έχουν πολλαπλές σχέσεις από τα άλλα models, βάζουμε: " public int *ModelNameId* { get; set; } " , και από κάτω του βάζουμε: " public ModelName ModelName { get; set; } ".
+4. Στο model του Movie, βάζουμε ως ForeignKey το όνομα που έχουμε δώσει για το ID του model του οποίου πήραμε το ID(Θα χρησιμοποιηθεί για την βάση).
+
+						AppDbContext override
+1. Φτιάχνουμε μια protected overide void OnModelCreating(ModelBuilder modelBuilder) και μέσα θα γίνει το configuration για τα εισαγωγή των foreign keys(εδώ είναι το ActorId, MovieId).
+2. Έξω από το protected overide void μας, εκεί γίνεται το configuration των queries(εισαγωγές) στην βάση.
