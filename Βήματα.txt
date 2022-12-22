@@ -30,3 +30,36 @@ Asp.net Core .Net 5 (Not Supported)
 						AppDbContext override
 1. Φτιάχνουμε μια protected overide void OnModelCreating(ModelBuilder modelBuilder) και μέσα θα γίνει το configuration για τα εισαγωγή των foreign keys(εδώ είναι το ActorId, MovieId).
 2. Έξω από το protected overide void μας, εκεί γίνεται το configuration των queries(εισαγωγές) στην βάση.
+
+						SQL Server Configuration
+1. Πάμε στο κομμάτι του server explorer και κάνουμε ' Create New SQL Server Database '.
+2. Πατάμε στην βάση που φτιάξαμε, κάνουμε δεξί κλικ και πατάμε ' Properties '.
+3. Κάνουμε Copy το Connection String.
+4. Πάμε στο αρχείο appsettings.json.
+5. Πριν από το "AllowedHost", γράφουμε :
+	"
+	"ConnectionStrings": {
+     		"DefaultConnectionString": " *Κάνουμε επικόλληση το Connection String* "
+  	},
+	"
+6. Πάμε στο αρχείο Startup.cs και πάμε στο κομμάτι του ConfigureServices.
+7. Στο κομμάτι του AdDbContext (translator), μέσα στην παρένθεση, γράφουμε: " options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnectionString")) ".
+		Σημείωση: Για το κομμάτι μέσα στην παρένθεση, το UseSqlServer χρειάζεται εισαγωγή ενός NuGet Package. Αυτό μπορούμε να το αποκτήσουμε ή κανοντας αναζήτηση το
+			    " Sql Server " στο Manage NuGet Packages for Solution..., πατώντας το " Microsoft.EntityFrameworkCore.SqlServer  " ή σε περίπτωση που δεν μπορούμε να
+			    το βρούμε, πάμε στο link:"https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.SqlServer/" και κάνουμε εισαγωγή τον κώδικα του Packet Manager
+			    που μας δίνει το site στο Visual Studio.
+			    Μετά την εισαγωγή του NuGet Package, κάνουμε εισαγωγή του namespace: " Microsoft.EntityFrameworkCore " στον κώδικα του UseSqlServer.
+
+						First Migration
+1. Πρέπει να κατεβάσουμε το NuGet Package: "Microsoft.EntityFrameworkCore.Tools" αναζητώντας "Tools".
+2. Πάμε στο Package Manager Console και γράφουμε: " Add-Migration * και το όνομα που θέλουμε * ".
+3. Εκτελώντας αυτήν την εντολή, μας δημιουργείτε ένας φάκελος ονομαζόμενος migrations, και μέσα στον φάκελο δημιουργείτε ένα αρχείο με την ημερομηνία της δημιουργείας του αρχείου αυτού μαζί
+		με το όνομα που δώσαμε για το migration.
+		Σημείωση: Μέσα στο αρχείο αυτό, περιέχονται κώδικας SQL για την δημιουργία/διαγραφή των Tables με βάση τα models που έχουμε φτιάξει.
+4. Έπειτα απ'αυτό, ξαναπάμε στο Package Manager Console, και εκτελούμε την εντολή: "Update-Database".
+		Σημείωση: Σε περίπτωση που λέει σφάλμα ότι δεν είναι εμπιστεύσιμο το certificate, αλλάζουμε το ConnectionString και προσθέτουμε το "Encrypt=False".
+5. Μετά από την εντολή αυτήν, μπορούμε να δούμε στο Server Explorer τα Tables που έχουν δημιουργηθεί.
+		Σημείωση: Μπορούμε για λεπτομερής αναπαράσταση των Tables, μπορούμε να πάμε στο Microsoft SQL Server Management Studio μας, και στην βάση μας, στο τμήμα Database Diagrams, να φτιάξουμε
+			    μια αναπαράσταση των Tables.
+			    Σε περίπτωση αλλαγής, εκτελούμε ξανά την εντολή: " Add-Migration * και το όνομα που θέλουμε * ", και ξανακάνουμε Update-Database.
+ 		
