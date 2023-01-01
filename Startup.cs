@@ -57,6 +57,9 @@ namespace eTickets_Video_asp.net_core_MVCNET5
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //Seed database
+            AppDbInitializer.Seed(app);
         }
     }
 }

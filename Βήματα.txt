@@ -1,5 +1,11 @@
 Asp.net Core .Net 5 (Not Supported)
-				Model Creation / AdDbContext Creation / Enums 
+
+						Project Creation
+1. Για την δημιουργία του συγκεκριμένου μας project, επιλέξαμε το ASP.NET Core Web App (Model-View-Controller)
+2. To authentication type μας είναι επιλεγμένο στο None
+3. Και επιλέξαμε το Configure for HTTPS
+
+						Model Creation / AdDbContext Creation / Enums 
 
 1. Φτιάξε τα Models (Movie, Cinema, Producer, Actor):
 	α. Το DateTime είναι για τα StartDate/EndDate.
@@ -63,3 +69,13 @@ Asp.net Core .Net 5 (Not Supported)
 			    μια αναπαράσταση των Tables.
 			    Σε περίπτωση αλλαγής, εκτελούμε ξανά την εντολή: " Add-Migration * και το όνομα που θέλουμε * ", και ξανακάνουμε Update-Database.
  		
+						Seeding the Database
+1. Δημιουργούμε ένα class στο αρχείο Data το οποίο το χρησιμοποιούμε για να τοποθετήσουμε αρχικά στοιχεία μέσα στην βάση δεδομένων μας(στην δικιά μας περίπτωση το ονομάσαμε "AppDbInitializer)".
+2. Φτιάχνουμε μια static void *όνομα*(IApplicationBuilder applicationBuilder) κάνοντας import το library "Microsoft.AspNetCore.Builder".
+3. Έπειτα τοποθετούμε ένα service Scope μέσα στο οποίο κάνουμε μια αναφορά στο AppDbContext και μετά τοποθετούμε το πρόγραμμα να ελένξει την ύπαρξη της βάσης δεδομένων μας(context.Database.EnsureCreated()).
+4. Έπειτα τοποθετούμε το κάθε στοιχείο της βάσης μας και ελέγχουμε αν είναι άδεια τα tables ή όχι.
+5. Μέσα στον έλεγχο αυτόν, σε περίπτωση τα tables της βάσης μας είναι άδεια, τοποθετούμε στοιχεία μέσα στην βάση(τα στοιχεία που τοποθετήσαμε στην εργασία μας, είναι ήδη έτοιμα).
+6. Μετά την τοποθέτηση των στοιχείων αυτών, δίνουμε εντολή τα στοιχεία αυτά να αποθηκευτούν(context.SaveChanges()).
+7. Για την έναρξη του ελέγχου/ τοποθέτηση στοιχείων στην βάση, τοποθετούμε στο αρχείο Startup.cs την εντολή AppDbInitializer.Seed(app). (Το app είναι επειδή στην void του Configure, το IApplicationBuilder είναι με όνομα app).
+
+						
