@@ -119,3 +119,29 @@ Asp.net Core .Net 5 (Not Supported)
 2. @foreach (var item in Model)
 	Χρησιμοποιήτε για να κάνει iterate όλα τα στοιχεία του Model(γι'αυτό βάλαμε στον 1ο κώδικα IEnumerable<Actor>).
 	
+
+						Adding Sevices (interfaces)
+	Αρχικά σαν επιλογή, αντί για να προσθέτουμε, αφαιρούμε, ενημερώσουμε στοιχεία στην βάση μας από το Controller(AppDbContext _context), μπορούμε να το κάνουμε και από τα Sevices. Στο συγκεκριμένο κομμάτι θα εξηγήσουμε για το κομμάτι του Actors.
+1. Αρχικά στο αρχείο Data που έχουμε δημιουργίσει σε προηγούμενο κομμάτι, φτιάχνουμε ένα αρχείο ονομάζομενο Services.
+2. Μέσα σ'αυτό το αρχείο, προθέτουμε ένα νέο αντικείμενο, το interface(θα το ονομάσουμε IActorsService και θα το βάλουμε public).
+3. Μέσα θα τοποθετήσουμε κάποιες εργασίες που θέλουμε να γίνουν στην βάση μας(GetAll, GetById, Add, Update, Delete).
+4. Έπειτα μέσα στο ίδιο αρχείο θα τοποθετήσουμε μια άλλη κλάση για τους Actors(θα το ονομάσουμε ActorsService).
+5. Αυτή η κλάση θα κληρονομεί από το αρχείο IActorsService που δημιουργήσαμε. Αρχικά θα μας βγάλει σφάλμα για την κληρονομικότητα, και φτιάχνετε διαλέγοντας την προτεινόμενη διόρθωση(δημιουργία void για την αναλυτική λειτουργεία τους).
+6. Τώρα για να αλλάξουμε τον προορισμό για το AppDbContext, τοποθετούμε το "private readonly AppDbContext _context" στο service μας.
+7. Έπειτα αντικαθιστούμε "private readonly AppDbContext _context" στο Controller που ασχολέιτε με το κομμάτι που θέλουμε(εδώ είναι Actors), και το αντικαθιστούμε με "private readonly IActorsService _service" (δηλαδή τοποθετούμε το να περνάει πρώτα από το Service).
+8. Στο Constructor αντικαθιστούμε την προηγούμενη παράμετρο με το "IActorsService service", και αντικαθιστούμε τις μεταβλητές.
+
+	Εδώ θα ασχοληθούμε αρχικά με το GetAll method και θα το κάνουμε σε λειτουργεία async
+9. Εφόσον είναι λειτουργεία async, γράφουμε "public async Task<IEnumerable<Actor>> GetAll()".
+10. Διαγράφουμε το throw exception.
+11. Τοποθετούμε τα στοιχεία που θα πάρουμε απ'την βάση σε μια var.
+12. Επειδή είναι με την λογική async, γράφουμε ""await _context.Actors.ToListAsync()" και κάνουμε return την var μας.
+13. Για να μην μας βγει κάποιο Exception όταν τρέξουμε την εφαρμογή, πρέπει στο αρχείο Startup στο ConfigureServices, πρέπει να το κάνουμε configure.
+
+	Εδώ υπάρχουν 3 τρόποι με τους οποίους μπορούμε να το κάνουμε:
+	α. Singleton
+	β. Scoped (αυτό θα χρησιμοποιήσουμε)
+	γ. Transient
+
+14. Για να το κάνουμε configure, γράφουμε "services.AddScoped<IActorsService, ActorsService>()" μέσα στην void ConfigureServices.
+
