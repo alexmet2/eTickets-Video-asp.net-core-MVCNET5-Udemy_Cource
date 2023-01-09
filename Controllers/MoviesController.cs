@@ -1,6 +1,7 @@
 ﻿using eTickets_Video_asp.net_core_MVCNET5.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace eTickets_Video_asp.net_core_MVCNET5.Controllers
@@ -11,13 +12,13 @@ namespace eTickets_Video_asp.net_core_MVCNET5.Controllers
 
         public MoviesController(AppDbContext context)
         {
-            _context= context;  
+            _context = context;  
         }
 
         public async Task<IActionResult> Index()
         {
-            var allProducers = _context.Movies.ToListAsync();
-            return View();
+            var allMovies = await _context.Movies.Include(n => n.Cinema).OrderBy(n => n.Name).ToListAsync();
+            return View(allMovies);
         }
 
     }

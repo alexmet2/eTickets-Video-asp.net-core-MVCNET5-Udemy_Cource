@@ -1,12 +1,13 @@
 Asp.net Core .Net 5 (Not Supported)
 
+
 						Project Creation
 1. Για την δημιουργία του συγκεκριμένου μας project, επιλέξαμε το ASP.NET Core Web App (Model-View-Controller)
 2. To authentication type μας είναι επιλεγμένο στο None
 3. Και επιλέξαμε το Configure for HTTPS
 
-						Model Creation / AdDbContext Creation / Enums 
 
+						Model Creation / AdDbContext Creation / Enums 
 1. Φτιάξε τα Models (Movie, Cinema, Producer, Actor):
 	α. Το DateTime είναι για τα StartDate/EndDate.
 	β. Το MovieCategory το βάζουμε κάνοντας import το αρχείο Data που φτιάξαμε που εκεί περιέχει enum δεδομένα (σαν list).
@@ -20,22 +21,23 @@ Asp.net Core .Net 5 (Not Supported)
 
 
 						Model Relationships
-
 1. Για να γίνουν πιο σωστές οι σχέσεις μεταξύ των Models, καλό θα ήταν να φτιάξουμε ένα σχέδιο στο οποίο αναφρέρουμε τις σχέσεις μεταξύ των Models (όλες οι σχέσεις σε αυτήν την εξήσηση, είναι με βάση την εικόνα).
 	Κανόνας:	
-			a. Όταν ένα model έχει πολλαπλές σχέσεις με ένα άλλο model, τότε στο model ειναι 1 προς πολλά, φτιάχνουμε μια List στοχευμένη προς το άλλο model.
+			α. Όταν ένα model έχει πολλαπλές σχέσεις με ένα άλλο model, τότε στο model ειναι 1 προς πολλά, φτιάχνουμε μια List στοχευμένη προς το άλλο model.
 				Π.Χ. Στο Cinema model, φτιάχνουμε μια list προοριζόμενη στο Movies, στο Producers model, φτιάχνουμε μια list προοριζόμενη στο Movies,
 				     στο Actors model, φτιάχνουμε μια list προοριζόμενη στο Actors_Movies.
-			b. Όταν δύο models έχουν πολλαπλές σχέσεις μεταξύ τους, τότε πρέπει να φτιάξουμε άλλο ένα model στο οποίο τα ενώνουμε αυτά μεταξύ τους
+			β. Όταν δύο models έχουν πολλαπλές σχέσεις μεταξύ τους, τότε πρέπει να φτιάξουμε άλλο ένα model στο οποίο τα ενώνουμε αυτά μεταξύ τους
 				Π.Χ. Τα models Movies, Actors έχουν αρχικά πολλές σχέσεις μεταξύ τους διότι πολλαπλοί ηθοποιοί μπορούν να παίξουν σε μια ταινία, όπως και
 				     σε μια ταινία υπάρχουν πολλαπλοί ηθοποιοί. Γι'αυτό φτιάχνουμε ένα Actors_Movies model στο οποίο συλλέγουμε εκεί τα MovieId και τα ActorId.
 2. Για την δημιουργία των σχέσεων, πρέπει να γράψουμε: " public List<* Το model στο οποίο προοριζόμαστε *> * ένα όνομα που θέλουμε * { get; set; } ".				
 3. Στο model στο οποίο έχουν πολλαπλές σχέσεις από τα άλλα models, βάζουμε: " public int *ModelNameId* { get; set; } " , και από κάτω του βάζουμε: " public ModelName ModelName { get; set; } ".
 4. Στο model του Movie, βάζουμε ως ForeignKey το όνομα που έχουμε δώσει για το ID του model του οποίου πήραμε το ID(Θα χρησιμοποιηθεί για την βάση).
 
+
 						AppDbContext override
 1. Φτιάχνουμε μια protected overide void OnModelCreating(ModelBuilder modelBuilder) και μέσα θα γίνει το configuration για τα εισαγωγή των foreign keys(εδώ είναι το ActorId, MovieId).
 2. Έξω από το protected overide void μας, εκεί γίνεται το configuration των queries(εισαγωγές) στην βάση.
+
 
 						SQL Server Configuration
 1. Πάμε στο κομμάτι του server explorer και κάνουμε ' Create New SQL Server Database '.
@@ -56,6 +58,7 @@ Asp.net Core .Net 5 (Not Supported)
 			    που μας δίνει το site στο Visual Studio.
 			    Μετά την εισαγωγή του NuGet Package, κάνουμε εισαγωγή του namespace: " Microsoft.EntityFrameworkCore " στον κώδικα του UseSqlServer.
 
+
 						First Migration
 1. Πρέπει να κατεβάσουμε το NuGet Package: "Microsoft.EntityFrameworkCore.Tools" αναζητώντας "Tools".
 2. Πάμε στο Package Manager Console και γράφουμε: " Add-Migration * και το όνομα που θέλουμε * ".
@@ -67,8 +70,9 @@ Asp.net Core .Net 5 (Not Supported)
 5. Μετά από την εντολή αυτήν, μπορούμε να δούμε στο Server Explorer τα Tables που έχουν δημιουργηθεί.
 		Σημείωση: Μπορούμε για λεπτομερής αναπαράσταση των Tables, μπορούμε να πάμε στο Microsoft SQL Server Management Studio μας, και στην βάση μας, στο τμήμα Database Diagrams, να φτιάξουμε
 			    μια αναπαράσταση των Tables.
-			    Σε περίπτωση αλλαγής, εκτελούμε ξανά την εντολή: " Add-Migration * και το όνομα που θέλουμε * ", και ξανακάνουμε Update-Database.
+			    Σε περίπτωση αλλαγής, εκτελούμε ξανά την εντολή: " Add-Migration *όνομα* ", και ξανακάνουμε Update-Database.
  		
+
 						Seeding the Database
 1. Δημιουργούμε ένα class στο αρχείο Data το οποίο το χρησιμοποιούμε για να τοποθετήσουμε αρχικά στοιχεία μέσα στην βάση δεδομένων μας(στην δικιά μας περίπτωση το ονομάσαμε "AppDbInitializer)".
 2. Φτιάχνουμε μια static void *όνομα*(IApplicationBuilder applicationBuilder) κάνοντας import το library "Microsoft.AspNetCore.Builder".
@@ -78,4 +82,40 @@ Asp.net Core .Net 5 (Not Supported)
 6. Μετά την τοποθέτηση των στοιχείων αυτών, δίνουμε εντολή τα στοιχεία αυτά να αποθηκευτούν(context.SaveChanges()).
 7. Για την έναρξη του ελέγχου/ τοποθέτηση στοιχείων στην βάση, τοποθετούμε στο αρχείο Startup.cs την εντολή AppDbInitializer.Seed(app). (Το app είναι επειδή στην void του Configure, το IApplicationBuilder είναι με όνομα app).
 
+
+						Controllers
+1. Θα ξεκινήσουμε με το Controller των Actors.
+2. Αρχικά θα κάνουμε αναφορά στο AppDbContext γράφοντας: "private readonly AppDbContext _context" (το "_" το βάζουμε συνήθως για να δηλώσουμε ότι μια μεταβλητή είναι private)
+3. Έπειτα δημιουργούμε έναν constructor, βάζουμε ως parameter το AppDbContext και το όνομα που θέλουμε.
+4. Μέσα στον constructor αντιστοιχούμε την private readonly μεταβλητή μας με το όνομα που δώσαμε ως parameter του constructor.
+5. Εδώ έχουμε 2 επιλογές για το IActionResult μας:
+	α. Σε περίπτωση που δεν θέλουμε να είναι ένα async method:
+			Δεν πειράζουμε το είδος του method μας, και τοποθετούμε μέσα της μια var *όνομα* = *όνομα private μεταβλητής*.*όνομα Model που θέλουμε*.*το είδος datatype που θέλουμε*.(επειδή δεν είναι async method, άμα θέλουμε List, βάζουμε ToList()).		
+	β. Σε περίπτωση που θέλουμε να είναι async method:
+			Μεταβάλλουμε το είδος του method μας και το αλλάζουμε σε: "public async Task<IActionResult> *όνομα*()".(κάνουμε import για το Task).
+			Τοποθετούμε μια var *όνομα* = await *όνομα private μεταβλητής*.*όνομα Model που θέλουμε*.*το είδος datatype που θέλουμε*(επειδή είναι async method, τοποθετούμε το await και άμα θέλουμε List, βάζουμε ToListAsync()).
+
+
+						Adding Our First View
+1. Αρχικά θα δημιουργήσουμε το View για το Actors Controller.
+2. Καταρχάς πρέπει να δημιουργήσουμε έναν καινούργιο φάκελο μέσα στον φάκελο Views και να το ονομάσουμε με τον ίδιο τρόπο που ονομάσαμε το Controller μας με το οποίο θα χρησιμοποιήσουμε. 
+3. Έπειτα επιλέγουμε να προσθέσουμε ένα αρχείο τύπου Razor View(κώδικας HTML με κώδικα C#).
+4. Έπειτα πρέπει να το ονομάσουμε με τον ίδιο τρόπο που έχουμε ονομάσει το method μας που επιστρέφει το View από το Controller μας.
+
+
+						Inside The Views Folder
+Αρχικά ο πρώτος κώδικας που γράφουμε είναι για να κάνουμε Define το model μας, ο δεύτερος κώδικας είναι για να κάνουμε Define ViewData και ο τρίτος κώδικας είναι ο κώδικας HTML που γράφουμε.
+	α. για τον 1ο κώδικα Define Model:
+		Μπορούμε να βάλουμε σε ένα datatype List το model το οποίο θέλουμε να ασχοληθούμε, αλλά καλύτερα είναι να το βάλουμε σε μορφή IEnumerable<>(Αυτό είναι σε περίπτωση που θέλουμε να κάνουμε iterate τα στοιχεία του Model μας).
+	β. για τον 2ο κώδικα Define ViewData:
+		Χρησιμοποιήτε για την μεταφορά δεδομένων από το Controller στο View. Στο συγκεκριμένο project μας, έχουμε μόνο ViewData για τον τίτλο που θα έχει η σελίδα μας στον περιηγητή μας.
+	γ. για τον 3ο κώδικα HTML:
+		Χρησιμοποιήτε για να γράφουμε κώδικα HTML μαζί με κώδικα C# όπου τον χρειαστούμε(για να ανοίξουμε κώδικα C#, τοποθετούμε το "@" και έπειτα τον κώδικα που θέλουμε).
+
 						
+						Περιπτώσεις χρήσης κώδικα C# σε HTML
+1. @Html.DisplayNameFor
+	Χρησιμοποιήτε για να δείξει το όνομα του στοιχείου που έχουμε βάλει στο table της βάσης μας(ή μπορούμε στο model μας να έχουμε ήδη σαν Display ένα όνομα, δηλ. για το Actor, με το Display είναι "Profile Picture", ενώ χωρίς αυτό θα ήταν "ProfilePictureURL")
+2. @foreach (var item in Model)
+	Χρησιμοποιήτε για να κάνει iterate όλα τα στοιχεία του Model(γι'αυτό βάλαμε στον 1ο κώδικα IEnumerable<Actor>).
+	
