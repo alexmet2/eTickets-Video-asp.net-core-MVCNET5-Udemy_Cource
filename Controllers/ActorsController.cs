@@ -20,5 +20,11 @@ namespace eTickets_Video_asp.net_core_MVCNET5.Controllers
             var allActors = await _service.GetAll();
             return View(allActors);
         }
+
+        //Get: Actors/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }
