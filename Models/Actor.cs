@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using eTickets_Video_asp.net_core_MVCNET5.Data.Base;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace eTickets_Video_asp.net_core_MVCNET5.Models
 {
-    public class Actor
+    public class Actor : IEntityBase
     {
         [Key]
         public int Id { get; set; }
