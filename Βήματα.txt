@@ -145,3 +145,26 @@ Asp.net Core .Net 5 (Not Supported)
 
 14. Για να το κάνουμε configure, γράφουμε "services.AddScoped<IActorsService, ActorsService>()" μέσα στην void ConfigureServices.
 
+					EntityBaseRepository
+	Είναι χρήσιμο ώστε να μην χρησιμοποιήσουμε/γράψουμε παρόμοιο κώδικα για την συνδεση στην βάση όλων των models.
+1. Αρχικά δημιουργούμε ένα καινούργιο αρχείο Base μέσα στο αρχείο Data
+2. Δημιυργούμε ένα interface IEntityBase και βάζουμε ένα κοινό στοιχείο των models, δηλαδή το ID.
+3. Δημιυργούμε ένα interface IEntityBaseRepository με παράμετρο το <T> και αναφέρουμε όπου το T ότι είναι class και κληρονομεί το IEntityBase και βάζουμε το new().
+4. Δημιυργούμε μια κλάση την οποία την ονομάζουμε EntityBaseRepository με παράμετρο το <T>, βάζουμε κληρονόμιση από το IEntityBaseRepository με παράμετρο το <T> και αναφέρουμε όπου το T ότι είναι class και κληρονομεί το IEntityBase και βάζουμε το new().
+	Σημείωση!
+	Αρχικά το EntityBaseRepository θα μας βγάλει σφάλμα και για να το διορθώσουμε κάνουμε show possible solutions, και επιλέγουμε την πρώτη επιλογή.
+
+	IEntityBase Χρήση:
+	1. Να πάρει ένα κοινό στοιχείο που θέλουμε απ'όλα τα Models.
+
+	IEntityBaseRepository Χρήση:
+	1. Να κατονομάσει τις λειτουργίες που θέλουμε να κάνει ώστε να το κάνει inherit το EntityBaseRepository.
+
+	EntityBaseRepository Χρήση:
+	1. Να κάνει όλες τις λειτουργίες που έχει σχέση με την βάση και την εφαρμογή μαζί με τις παραμέτρους που μπορεί να χρειαστούμε για το κάθε model μας.
+	2. Ο κώδικας μας βγαίνει πιο λιτός και πιο εύκολα διαχειρίσιμος.
+
+5. Διαγράφουμε τον κώδικα που έχουμε γράψει για το ActorsService, και κρατάμε μόνο το constructor
+6. Διαγράφουμε όλο τον κώδικα από το IActorsService και το βάζουμε να κάνει inherit από το IEntityBaseRepository με παράμετρο το model που θέλουμε να χρησιμοποιήσουμε.
+7. Κάνουμε το Model που θέλουμε να χρησιμοποιεί το IEntityBase, το βάζουμε να κάνει inherit απο εκεί.
+
