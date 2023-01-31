@@ -31,6 +31,7 @@ namespace eTickets_Video_asp.net_core_MVCNET5
 
             //Services Configuration
             services.AddScoped<IActorsService, ActorsService>();
+            services.AddScoped<IProducersService, ProducersService>();
 
             services.AddControllersWithViews();
         }
