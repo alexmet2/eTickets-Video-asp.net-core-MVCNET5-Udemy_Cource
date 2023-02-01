@@ -168,3 +168,102 @@ Asp.net Core .Net 5 (Not Supported)
 6. Διαγράφουμε όλο τον κώδικα από το IActorsService και το βάζουμε να κάνει inherit από το IEntityBaseRepository με παράμετρο το model που θέλουμε να χρησιμοποιήσουμε.
 7. Κάνουμε το Model που θέλουμε να χρησιμοποιεί το IEntityBase, το βάζουμε να κάνει inherit απο εκεί.
 
+				EntityBaseRepository(Create, Details, Edit, Delete Views) for Producer Data, Cinema Data, Actors Data
+	Example for Cinema Data
+1. Καταρχάς πρέπει να γίνει το configuration του κάθε Service.
+2. Για να γίνει αυτό, πάμε αρχικά στο αρχείο Data, πάμε στο αρχείο Services και προσθέτουμε ένα νέο interface(στο παράδειγμα αυτό θα βάλουμε ICinemasService).
+3. Το βάζουμε να είναι public το interface, και θα κάνουμε να κάνει inherit από το IEntityBaseRepository<Cinema>.
+	Σημείωση, αρχικά θα μας βγάλει ένα σφάλμα και για να το διορθώσουμε, πάμε στο models μας(Cinemas), και κάνουμε την κλάση να κληρονομεί από το IEntityBase.
+4. Ξαναπάμε στο αρχείο Service και προσθέτουμε μια κλάση με όνομα CinemasService.
+5. Το κάνουμε να κληρονομεί από το EntityBaseRepository<Cinema>, ICinemasService και βάζουμε έναν constructor με παράμετρο AppDbContext και base(context).
+6. Έπειτα πάμε στο startupp.cs στο Configure Services και γράφουμε services.AddScoped<ICinemasService,CinemasService>();.
+7. Έπειτα πάμε στο Controller του model μας και διαγράφουμε το injection(που είχαμε βάλει εμείς αρχικά) και το αντικαθιστούμε με ICinemasService _service, και αλλάζουμε την παράμετρο του constructor με ICinemasService service αλλάζοντας και την αντιστοίχιση μεταβλητών στον constructor.
+8. Και τέλος στο IActionResult αλλάζουμε το await _context.Cinemas.ToListAsync();, με await _service.GetAll.Async();.
+
+		Create
+1. Φτιαχνουμε αρχικά το View που θα έχει το Create μαζί με τα στοιχεία για τα validations.
+2. Πάμε στο Controller και φτιάχνουμε 2 methods με το ίδιο όνομα, τα οποία:
+	α. Το 1ο θα εμφανίζει το View. Γράφουμε:
+
+		public IActionResult Create(){
+			return View();
+		}	
+
+	β. Το 2ο θα επεξεργαστεί το PostRequest μόλις ο χρήστης βάλει τα στοιχεία.
+		
+		[HttpPost]
+		public async Task<IActionResult> Create([Bind("Logo,Name,Description")] Cinema cinema)
+        {
+            if(!ModelState.IsValid) return View(cinema);
+
+            await _service.AddAsync(cinema);
+            return RedirectToAction(nameof(Index));
+        }
+3. Φτιάχνουμε τα [Required(ErrorMessage="")] μέσα στο Model που θέλουμε να ασχοληθούμε.
+
+	Details
+1. Φτιάχνουμε το View που θα έχει το Details.
+2. Πάμε στο Controller και φτιάχνουμε 1 method.Γράφουμε:
+
+	public async Task<IActionResult> Details(int id)
+        {
+            var cinemaDetails = await _service.GetByIdAsync(id);
+            if (cinemaDetails == null) return View("NotFound");
+            return View(cinemaDetails);
+        }
+
+	Edit/Update
+1. Φτιάχνουμε το View που θα έχει το Edit.
+2. Πάμε στο Controler και φτιάχνουμε 2 methods με το ίδιο όνομα.
+	α. Το 1ο θα επιστρέφει τα στοιχεία και θα τα εμφανίζει. Γράφουμε:
+
+	public async Task<IActionResult> Edit(int id)
+        {
+            var cinemaDetails = await _service.GetByIdAsync(id);
+            if (cinemaDetails == null) return View("NotFound");
+            return View(cinemaDetails);
+        }
+
+	β. Το 2ο θα κάνει τις αλλαγές και τις ενημερώσεις στην βάση.
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Logo,Name,Description")] Cinema cinema)
+        {
+            if (!ModelState.IsValid) return View(cinema);
+
+            await _service.UpdateAsync(id,cinema);
+            return RedirectToAction(nameof(Index));
+        }
+
+	Delete
+1. Φτιάχνουμε το View για το Delete.
+2. Φτιάχνουμε 2 methods με διαφορετικά ονόματα.
+	α. Το 1ο είναι για να επιστρέφει τα στοιχεία και να τα εμφανίζει. Γράφουμε:
+
+		public async Task<IActionResult> Delete(int id)
+        {
+            var cinemaDetails = await _service.GetByIdAsync(id);
+            if (cinemaDetails == null) return View("NotFound");
+            return View(cinemaDetails);
+        }
+
+	β. Το 2ο είναι για να κάνει την διαγραφή και να επιστρέφει στην σελίδα Index(Το ActionName στο HttpPost είναι για να δείξουμε το View που να καταυθυνθεί για το asp-action). Γράφουμε:
+
+        [HttpPost,ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var cinemaDetails = await _service.GetByIdAsync(id);
+            if (cinemaDetails == null) return View("NotFound");
+
+            await _service.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+	Views Σημείωση!!
+1. Στο index.cshtml, στα links για να πάμε στο Edit, Delete, Details(και φυσικά και στα υπόλοιπα Views για να πηγαίνουν στις αντίστοιχες σελίδες), γράφουμε στα links τους τα εξής:
+
+	Για το Edit:
+	asp-action="Edit" asp-route-id="@item.Id"
+	Για το Delete:
+	asp-action="Delete" asp-route-id="@item.Id"
+	Για το Details:
+	asp-action="Details" asp-route-id="@item.Id"
