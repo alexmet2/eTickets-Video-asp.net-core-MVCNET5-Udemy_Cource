@@ -1,4 +1,5 @@
-﻿using eTickets_Video_asp.net_core_MVCNET5.Data.Enums;
+﻿using eTickets_Video_asp.net_core_MVCNET5.Data.Base;
+using eTickets_Video_asp.net_core_MVCNET5.Data.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace eTickets_Video_asp.net_core_MVCNET5.Models
 {
-    public class Movie
+    public class Movie : IEntityBase
     {
 
         [Key]
